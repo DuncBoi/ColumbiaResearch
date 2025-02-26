@@ -52,4 +52,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-tflite-support:16.1.0")
     // GPU Delegate
     implementation ("com.google.android.gms:play-services-tflite-gpu:16.2.0")
+    implementation ("org.tensorflow:tensorflow-lite-support:0.4.3")
+
 }
