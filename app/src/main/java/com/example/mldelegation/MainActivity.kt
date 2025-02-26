@@ -43,10 +43,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
-        findViewById<Button>(R.id.btnRunGpu).setOnClickListener {
+        findViewById<Button>(R.id.btnGpuBenchmark).setOnClickListener {
             showGpuInfoDialog()
         }
-        findViewById<Button>(R.id.btnRunCpu).setOnClickListener {
+        findViewById<Button>(R.id.btnCpuBenchmark).setOnClickListener {
             showCpuInfoDialog()
         }
     }
