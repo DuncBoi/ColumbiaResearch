@@ -1,4 +1,5 @@
 package com.example.mldelegation
+import android.content.Intent
 import android.opengl.GLES20
 import android.opengl.GLES32
 import android.opengl.GLSurfaceView
@@ -6,6 +7,8 @@ import android.os.Build
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.tflite.client.TfLiteInitializationOptions
 import com.google.android.gms.tflite.gpu.support.TfLiteGpu
 import com.google.android.gms.tflite.java.TfLite
+import com.google.android.material.button.MaterialButton
 import org.tensorflow.lite.InterpreterApi
 import org.tensorflow.lite.gpu.GpuDelegateFactory
 import org.tensorflow.lite.support.common.FileUtil
@@ -43,12 +47,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
-        findViewById<Button>(R.id.btnGpuBenchmark).setOnClickListener {
+        findViewById<MaterialButton>(R.id.btnGpuBenchmark).setOnClickListener {
             showGpuInfoDialog()
         }
-        findViewById<Button>(R.id.btnCpuBenchmark).setOnClickListener {
-            showCpuInfoDialog()
+        findViewById<MaterialButton>(R.id.btnCpuBenchmark).setOnClickListener {
+            showLoadingDialog()
         }
+    }
+
+    private fun showLoadingDialog() {
+        val progressDialog = AlertDialog.Builder(this)
+            .setView(R.layout.loading_dialog)
+            .setCancelable(false)
+            .create()
+
+        progressDialog.show()
+
+        // Simulate detection process
+        Handler(Looper.getMainLooper()).postDelayed({
+            progressDialog.dismiss()
+            val cpuInfo = getCpuInfo()
+            startCpuBenchmarkActivity(cpuInfo)
+        }, 1500)
+    }
+
+    private fun startCpuBenchmarkActivity(cpuInfo: String) {
+        val intent = Intent(this, CpuBenchmarkActivity::class.java).apply {
+            putExtra("CPU_INFO", cpuInfo)
+        }
+        startActivity(intent)
+        //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     private fun getCpuInfo(): String {
@@ -67,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             """
-        CPU Information:
         Model: $model
         Cores: $cores
         Architecture: $arch
